@@ -4,10 +4,11 @@ Application en ligne de commande, **entièrement au clavier, sans aucun argument
 choisis dans des menus.
 
 ```
-╭─────────────────────────────────────────────────────────────────────────╮
-│ 🚄 Trajets — billets TGV INOUI et OUIGO au meilleur prix                          │
-│ ↑↓ choisir · Entrée valider · Échap étape précédente · Ctrl+C menu principal     │
-╰─────────────────────────────────────────────────────────────────────────╯
+╭─────────────────────────────────────────────────────────────────────╮
+│ Trajets — billets TGV INOUI et OUIGO au meilleur prix               │
+│ ↑↓ choisir · Entrée valider · Échap étape précédente                │
+│ Ctrl+C menu principal                                               │
+╰─────────────────────────────────────────────────────────────────────╯
 ? Que veux-tu faire ? (↑↓ puis Entrée)
  » 🎓  Mode alternance — Paris ⇄ Nancy, autour de tes fins de période
    🧭  Trajet libre — aller simple, aller-retour ou plusieurs A/R, villes au choix
