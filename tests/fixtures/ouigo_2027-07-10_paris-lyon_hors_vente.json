@@ -1,0 +1,239 @@
+{
+ "recherche": {
+  "outbound": [],
+  "blocs_cms_outbound": [
+   {
+    "name": "OUT_OF_SALES",
+    "title": "Message hors ODV",
+    "content": "<h2>Vos billets ne sont pas encore disponibles, créez une alerte &nbsp;!</h2>\n<p>Pour être alerté(e) de la disponibilité de vos billets, créez une alerte en renseignant votre adresse e-mail ci-dessous !</p>\n<p>Vous recevrez un e-mail dès l'ouverture à la vente de votre train.</p>"
+   }
+  ],
+  "registration_sales_opening_outbound": {
+   "can_register": true,
+   "is_registered": false
+  },
+  "pop_offer": false,
+  "pop_offer_lc": false
+ },
+ "calendriers": [
+  [
+   {
+    "date": "2027-07-01",
+    "price": 25.0,
+    "is_best_price": true,
+    "is_best_price_month": true,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-02",
+    "price": 39.0,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-03",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-04",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-05",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-06",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-07",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-08",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-09",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-10",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-11",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-12",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-13",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-14",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-15",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-16",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-17",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-18",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-19",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-20",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-21",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-22",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-23",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-24",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-25",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-26",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-27",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-28",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-29",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-30",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   },
+   {
+    "date": "2027-07-31",
+    "price": null,
+    "is_best_price": false,
+    "is_best_price_month": false,
+    "is_promo": false
+   }
+  ]
+ ]
+}

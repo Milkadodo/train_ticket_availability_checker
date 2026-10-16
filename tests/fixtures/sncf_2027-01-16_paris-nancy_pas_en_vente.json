@@ -1,0 +1,552 @@
+{
+ "longDistance": {
+  "status": "RESULTS",
+  "proposals": {
+   "proposals": [
+    {
+     "travelId": "2027-01-16T07:46_2503",
+     "departure": {
+      "originStationLabel": "Paris Est",
+      "timeLabel": "07:46",
+      "dateLabel": "Aller : Sam. 16 janv.",
+      "displayDisabilityAssistance": false
+     },
+     "arrival": {
+      "destinationStationLabel": "Nancy",
+      "timeLabel": "09:36",
+      "dateLabel": "Sam. 16 janv.",
+      "displayDisabilityAssistance": false
+     },
+     "durationLabel": "1h50",
+     "transporterDescription": "Direct TGV INOUI",
+     "status": {
+      "isBookable": false,
+      "label": "En vente prochainement",
+      "title": "Billets mis en vente prochainement",
+      "description": "Ce trajet vous intéresse ? Depuis la page des résultats, demandez à être prévenu dès qu'un billet est disponible.",
+      "action": {
+       "label": "Quand les billets sont-ils mis en vente ?",
+       "url": "https://www.sncf-connect.com/aide/l-ouverture-des-ventes"
+      },
+      "severity": "INFO_MESSAGE",
+      "icon": {
+       "iconGroup": "InfoMessage",
+       "iconName": "info_message"
+      }
+     },
+     "secondComfortClassOffers": {
+      "offers": []
+     },
+     "globalTimeline": {
+      "steps": [
+       {
+        "other": true
+       },
+       {
+        "train": {
+         "departure": {
+          "stationCode": "",
+          "stationLabel": "Paris Est",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "07:46"
+         },
+         "arrival": {
+          "stationCode": "",
+          "stationLabel": "Nancy",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "09:36"
+         },
+         "transporter": {
+          "modeIcon": {
+           "iconGroup": "Transports",
+           "iconName": "train"
+          },
+          "logo": "tgv_inoui",
+          "number": "n° 2503",
+          "referenceLabel": "n° 2503",
+          "description": "TGV INOUI",
+          "semanticDescription": "TGV INOUI"
+         }
+        }
+       }
+      ]
+     }
+    },
+    {
+     "travelId": "2027-01-16T08:36_839163",
+     "departure": {
+      "originStationLabel": "Paris Est",
+      "timeLabel": "08:36",
+      "dateLabel": "Aller : Sam. 16 janv.",
+      "displayDisabilityAssistance": false
+     },
+     "arrival": {
+      "destinationStationLabel": "Nancy",
+      "timeLabel": "11:55",
+      "dateLabel": "Sam. 16 janv.",
+      "displayDisabilityAssistance": false
+     },
+     "durationLabel": "3h19",
+     "transporterDescription": "Direct TER Fluo",
+     "bestPrice": {
+      "value": 46.8,
+      "currency": "EUR"
+     },
+     "status": {
+      "isBookable": true
+     },
+     "secondComfortClassOffers": {
+      "offers": [
+       {
+        "type": "NORMAL",
+        "priceLabel": "46,80 €",
+        "title": "Modifiable sous conditions",
+        "comfortClass": {
+         "code": "SECOND",
+         "label": "2de classe",
+         "accessibilityLabel": "Seconde classe"
+        },
+        "messages": [
+         {
+          "iconId": {
+           "iconGroup": "InfoMessage",
+           "iconName": "positive"
+          },
+          "message": "15,50 € économisés grâce à votre carte de réduction"
+         }
+        ],
+        "travelersFares": [
+         {
+          "subtitles": [
+           "Billet Carte Avantage Jeune"
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     "firstComfortClassOffers": {
+      "offers": [
+       {
+        "type": "NORMAL",
+        "priceLabel": "70,10 €",
+        "title": "Modifiable sous conditions",
+        "comfortClass": {
+         "code": "FIRST",
+         "label": "1re classe",
+         "accessibilityLabel": "1re classe"
+        },
+        "messages": [
+         {
+          "iconId": {
+           "iconGroup": "InfoMessage",
+           "iconName": "positive"
+          },
+          "message": "23,30 € économisés grâce à votre carte de réduction"
+         }
+        ],
+        "travelersFares": [
+         {
+          "subtitles": [
+           "Billet Carte Avantage Jeune"
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     "globalTimeline": {
+      "steps": [
+       {
+        "other": true
+       },
+       {
+        "train": {
+         "departure": {
+          "stationCode": "",
+          "stationLabel": "Paris Est",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "08:36"
+         },
+         "arrival": {
+          "stationCode": "",
+          "stationLabel": "Nancy",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "11:55"
+         },
+         "transporter": {
+          "modeIcon": {
+           "iconGroup": "Transports",
+           "iconName": "transilien_simple"
+          },
+          "logo": "fluo",
+          "number": "n° 839163",
+          "operatedBy": "Opéré par SNCF VOYAGEURS 1187",
+          "referenceLabel": "n° 839163",
+          "description": "Train Fluo",
+          "semanticDescription": "Train Fluo"
+         }
+        }
+       }
+      ]
+     }
+    },
+    {
+     "travelId": "2027-01-16T11:04_12141",
+     "departure": {
+      "originStationLabel": "Paris Est",
+      "timeLabel": "11:04",
+      "dateLabel": "Aller : Sam. 16 janv.",
+      "displayDisabilityAssistance": false
+     },
+     "arrival": {
+      "destinationStationLabel": "Nancy",
+      "timeLabel": "12:36",
+      "dateLabel": "Sam. 16 janv.",
+      "displayDisabilityAssistance": false
+     },
+     "durationLabel": "1h32",
+     "transporterDescription": "Direct TGV INOUI",
+     "status": {
+      "isBookable": false,
+      "label": "En vente prochainement",
+      "title": "Billets mis en vente prochainement",
+      "description": "Ce trajet vous intéresse ? Depuis la page des résultats, demandez à être prévenu dès qu'un billet est disponible.",
+      "action": {
+       "label": "Quand les billets sont-ils mis en vente ?",
+       "url": "https://www.sncf-connect.com/aide/l-ouverture-des-ventes"
+      },
+      "severity": "INFO_MESSAGE",
+      "icon": {
+       "iconGroup": "InfoMessage",
+       "iconName": "info_message"
+      }
+     },
+     "secondComfortClassOffers": {
+      "offers": []
+     },
+     "globalTimeline": {
+      "steps": [
+       {
+        "other": true
+       },
+       {
+        "train": {
+         "departure": {
+          "stationCode": "",
+          "stationLabel": "Paris Est",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "11:04"
+         },
+         "arrival": {
+          "stationCode": "",
+          "stationLabel": "Nancy",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "12:36"
+         },
+         "transporter": {
+          "modeIcon": {
+           "iconGroup": "Transports",
+           "iconName": "train"
+          },
+          "logo": "tgv_inoui",
+          "number": "n° 12141",
+          "referenceLabel": "n° 12141",
+          "description": "TGV INOUI",
+          "semanticDescription": "TGV INOUI"
+         }
+        }
+       }
+      ]
+     }
+    },
+    {
+     "travelId": "2027-01-16T11:04_2571",
+     "departure": {
+      "originStationLabel": "Paris Est",
+      "timeLabel": "11:04",
+      "dateLabel": "Aller : Sam. 16 janv.",
+      "displayDisabilityAssistance": false
+     },
+     "arrival": {
+      "destinationStationLabel": "Nancy",
+      "timeLabel": "12:36",
+      "dateLabel": "Sam. 16 janv.",
+      "displayDisabilityAssistance": false
+     },
+     "durationLabel": "1h32",
+     "transporterDescription": "Direct TGV INOUI",
+     "status": {
+      "isBookable": false,
+      "label": "En vente prochainement",
+      "title": "Billets mis en vente prochainement",
+      "description": "Ce trajet vous intéresse ? Depuis la page des résultats, demandez à être prévenu dès qu'un billet est disponible.",
+      "action": {
+       "label": "Quand les billets sont-ils mis en vente ?",
+       "url": "https://www.sncf-connect.com/aide/l-ouverture-des-ventes"
+      },
+      "severity": "INFO_MESSAGE",
+      "icon": {
+       "iconGroup": "InfoMessage",
+       "iconName": "info_message"
+      }
+     },
+     "secondComfortClassOffers": {
+      "offers": []
+     },
+     "globalTimeline": {
+      "steps": [
+       {
+        "other": true
+       },
+       {
+        "train": {
+         "departure": {
+          "stationCode": "",
+          "stationLabel": "Paris Est",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "11:04"
+         },
+         "arrival": {
+          "stationCode": "",
+          "stationLabel": "Nancy",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "12:36"
+         },
+         "transporter": {
+          "modeIcon": {
+           "iconGroup": "Transports",
+           "iconName": "train"
+          },
+          "logo": "tgv_inoui",
+          "number": "n° 2571",
+          "referenceLabel": "n° 2571",
+          "description": "TGV INOUI",
+          "semanticDescription": "TGV INOUI"
+         }
+        }
+       }
+      ]
+     }
+    },
+    {
+     "travelId": "2027-01-16T14:58_2511",
+     "departure": {
+      "originStationLabel": "Paris Est",
+      "timeLabel": "14:58",
+      "dateLabel": "Aller : Sam. 16 janv.",
+      "displayDisabilityAssistance": false
+     },
+     "arrival": {
+      "destinationStationLabel": "Nancy",
+      "timeLabel": "16:44",
+      "dateLabel": "Sam. 16 janv.",
+      "displayDisabilityAssistance": false
+     },
+     "durationLabel": "1h46",
+     "transporterDescription": "Direct TGV INOUI",
+     "status": {
+      "isBookable": false,
+      "label": "En vente prochainement",
+      "title": "Billets mis en vente prochainement",
+      "description": "Ce trajet vous intéresse ? Depuis la page des résultats, demandez à être prévenu dès qu'un billet est disponible.",
+      "action": {
+       "label": "Quand les billets sont-ils mis en vente ?",
+       "url": "https://www.sncf-connect.com/aide/l-ouverture-des-ventes"
+      },
+      "severity": "INFO_MESSAGE",
+      "icon": {
+       "iconGroup": "InfoMessage",
+       "iconName": "info_message"
+      }
+     },
+     "secondComfortClassOffers": {
+      "offers": []
+     },
+     "globalTimeline": {
+      "steps": [
+       {
+        "other": true
+       },
+       {
+        "train": {
+         "departure": {
+          "stationCode": "",
+          "stationLabel": "Paris Est",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "14:58"
+         },
+         "arrival": {
+          "stationCode": "",
+          "stationLabel": "Nancy",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "16:44"
+         },
+         "transporter": {
+          "modeIcon": {
+           "iconGroup": "Transports",
+           "iconName": "train"
+          },
+          "logo": "tgv_inoui",
+          "number": "n° 2511",
+          "referenceLabel": "n° 2511",
+          "description": "TGV INOUI",
+          "semanticDescription": "TGV INOUI"
+         }
+        }
+       }
+      ]
+     }
+    },
+    {
+     "travelId": "2027-01-16T18:07_2573",
+     "departure": {
+      "originStationLabel": "Paris Est",
+      "timeLabel": "18:07",
+      "dateLabel": "Aller : Sam. 16 janv.",
+      "displayDisabilityAssistance": false
+     },
+     "arrival": {
+      "destinationStationLabel": "Nancy",
+      "timeLabel": "19:44",
+      "dateLabel": "Sam. 16 janv.",
+      "displayDisabilityAssistance": false
+     },
+     "durationLabel": "1h37",
+     "transporterDescription": "Direct TGV INOUI",
+     "status": {
+      "isBookable": false,
+      "label": "En vente prochainement",
+      "title": "Billets mis en vente prochainement",
+      "description": "Ce trajet vous intéresse ? Depuis la page des résultats, demandez à être prévenu dès qu'un billet est disponible.",
+      "action": {
+       "label": "Quand les billets sont-ils mis en vente ?",
+       "url": "https://www.sncf-connect.com/aide/l-ouverture-des-ventes"
+      },
+      "severity": "INFO_MESSAGE",
+      "icon": {
+       "iconGroup": "InfoMessage",
+       "iconName": "info_message"
+      }
+     },
+     "secondComfortClassOffers": {
+      "offers": []
+     },
+     "globalTimeline": {
+      "steps": [
+       {
+        "other": true
+       },
+       {
+        "train": {
+         "departure": {
+          "stationCode": "",
+          "stationLabel": "Paris Est",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "18:07"
+         },
+         "arrival": {
+          "stationCode": "",
+          "stationLabel": "Nancy",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "19:44"
+         },
+         "transporter": {
+          "modeIcon": {
+           "iconGroup": "Transports",
+           "iconName": "train"
+          },
+          "logo": "tgv_inoui",
+          "number": "n° 2573",
+          "referenceLabel": "n° 2573",
+          "description": "TGV INOUI",
+          "semanticDescription": "TGV INOUI"
+         }
+        }
+       }
+      ]
+     }
+    },
+    {
+     "travelId": "2027-01-16T20:07_2519",
+     "departure": {
+      "originStationLabel": "Paris Est",
+      "timeLabel": "20:07",
+      "dateLabel": "Aller : Sam. 16 janv.",
+      "displayDisabilityAssistance": false
+     },
+     "arrival": {
+      "destinationStationLabel": "Nancy",
+      "timeLabel": "21:44",
+      "dateLabel": "Sam. 16 janv.",
+      "displayDisabilityAssistance": false
+     },
+     "durationLabel": "1h37",
+     "transporterDescription": "Direct TGV INOUI",
+     "status": {
+      "isBookable": false,
+      "label": "En vente prochainement",
+      "title": "Billets mis en vente prochainement",
+      "description": "Ce trajet vous intéresse ? Depuis la page des résultats, demandez à être prévenu dès qu'un billet est disponible.",
+      "action": {
+       "label": "Quand les billets sont-ils mis en vente ?",
+       "url": "https://www.sncf-connect.com/aide/l-ouverture-des-ventes"
+      },
+      "severity": "INFO_MESSAGE",
+      "icon": {
+       "iconGroup": "InfoMessage",
+       "iconName": "info_message"
+      }
+     },
+     "secondComfortClassOffers": {
+      "offers": []
+     },
+     "globalTimeline": {
+      "steps": [
+       {
+        "other": true
+       },
+       {
+        "train": {
+         "departure": {
+          "stationCode": "",
+          "stationLabel": "Paris Est",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "20:07"
+         },
+         "arrival": {
+          "stationCode": "",
+          "stationLabel": "Nancy",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "21:44"
+         },
+         "transporter": {
+          "modeIcon": {
+           "iconGroup": "Transports",
+           "iconName": "train"
+          },
+          "logo": "tgv_inoui",
+          "number": "n° 2519",
+          "referenceLabel": "n° 2519",
+          "description": "TGV INOUI",
+          "semanticDescription": "TGV INOUI"
+         }
+        }
+       }
+      ]
+     }
+    }
+   ],
+   "pagination": {
+    "previous": {
+     "label": "Afficher le jour précédent",
+     "changeDay": true
+    },
+    "next": {
+     "label": "Afficher le jour suivant",
+     "changeDay": true
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "outbound": [],
+ "blocs_cms_outbound": [
+  {
+   "name": "NO_RESULTS",
+   "title": "Aucun résultat",
+   "content": "<h2>Oups, aucun trajet ne correspond à votre recherche…</h2>\n<p>Modifiez vos <b>critères</b> de recherche&nbsp;!</p>"
+  }
+ ],
+ "next_departure_outbound": {
+  "date": "2026-12-13",
+  "label": "Prochain départ le 13/12"
+ },
+ "pop_offer": false,
+ "pop_offer_lc": false
+}

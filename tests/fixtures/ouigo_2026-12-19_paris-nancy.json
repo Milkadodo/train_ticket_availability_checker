@@ -1,0 +1,60 @@
+{
+ "outbound": [
+  {
+   "id": "0:RDA|7697|OUIGO|2026-12-19|2026-12-19T09:11|2026-12-19T10:49;87113001;87141002",
+   "service_date": "2026-12-19",
+   "segments": [
+    {
+     "restriction_exception": null,
+     "id": "0:RDA|7697|OUIGO|2026-12-19|2026-12-19T09:11|2026-12-19T10:49",
+     "service_name": "7697",
+     "service_date": "2026-12-19",
+     "remaining_seats": null,
+     "departure_station": {
+      "departure_timestamp": "2026-12-19T09:11:00+01:00",
+      "_u_i_c_station_code": "87113001",
+      "name": "Paris Gare de l'Est"
+     },
+     "arrival_station": {
+      "arrival_timestamp": "2026-12-19T10:49:00+01:00",
+      "_u_i_c_station_code": "87141002",
+      "name": "Nancy-Ville"
+     },
+     "upgrade": null,
+     "options": null,
+     "service_type": {
+      "code": "OUIGO",
+      "modality": "HIGHSPEED_RAIL",
+      "name": "OUIGO Grande Vitesse"
+     },
+     "logical_availability": {
+      "bucket_code": "S_16_0",
+      "logical": 1282
+     }
+    }
+   ],
+   "direction": "outbound",
+   "price": 85.0,
+   "original_price": 85.0,
+   "is_best_price": true,
+   "departure_station": {
+    "departure_timestamp": "2026-12-19T09:11:00+01:00",
+    "_u_i_c_station_code": "87113001",
+    "name": "Paris Gare de l'Est"
+   },
+   "arrival_station": {
+    "arrival_timestamp": "2026-12-19T10:49:00+01:00",
+    "_u_i_c_station_code": "87141002",
+    "name": "Nancy-Ville"
+   },
+   "full": false,
+   "physical_remaining_seats": null,
+   "remaining_seats": null,
+   "backmarket": {
+    "can_backmarket": false,
+    "backmarket_url": null
+   },
+   "is_promo": false
+  }
+ ]
+}

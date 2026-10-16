@@ -1,0 +1,56 @@
+{
+ "outbound": [
+  {
+   "id": "0:RDA|7882|OUIGO|2026-11-08|2026-11-08T19:25|2026-11-08T21:22;87762906;87686006",
+   "service_date": "2026-11-08",
+   "segments": [
+    {
+     "restriction_exception": null,
+     "id": "0:RDA|7882|OUIGO|2026-11-08|2026-11-08T19:25|2026-11-08T21:22",
+     "service_name": "7882",
+     "service_date": "2026-11-08",
+     "remaining_seats": null,
+     "departure_station": {
+      "departure_timestamp": "2026-11-08T19:25:00+01:00",
+      "_u_i_c_station_code": "87762906",
+      "name": "Lyon Saint-Exupéry – Aéroport"
+     },
+     "arrival_station": {
+      "arrival_timestamp": "2026-11-08T21:22:00+01:00",
+      "_u_i_c_station_code": "87686006",
+      "name": "Paris Gare de Lyon"
+     },
+     "upgrade": null,
+     "options": null,
+     "service_type": {
+      "code": "OUIGO",
+      "modality": "HIGHSPEED_RAIL",
+      "name": "OUIGO Grande Vitesse"
+     }
+    }
+   ],
+   "direction": "outbound",
+   "price": null,
+   "original_price": null,
+   "is_best_price": false,
+   "departure_station": {
+    "departure_timestamp": "2026-11-08T19:25:00+01:00",
+    "_u_i_c_station_code": "87762906",
+    "name": "Lyon Saint-Exupéry – Aéroport"
+   },
+   "arrival_station": {
+    "arrival_timestamp": "2026-11-08T21:22:00+01:00",
+    "_u_i_c_station_code": "87686006",
+    "name": "Paris Gare de Lyon"
+   },
+   "full": true,
+   "physical_remaining_seats": null,
+   "remaining_seats": null,
+   "backmarket": {
+    "can_backmarket": true,
+    "backmarket_url": "https://ouigoswap.ouigo.com/alerting/fr/redirection?distributor=OUIGO&transportNumber=7882&departureStationCode=87762906&arrivalStationCode=87686006&departureDateTime=2026-11-08T19:25:00+01:00&arrivalDateTime=2026-11-08T21:22:00+01:00&nbAdult=1"
+   },
+   "is_promo": false
+  }
+ ]
+}

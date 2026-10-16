@@ -1,0 +1,155 @@
+{
+ "longDistance": {
+  "status": "RESULTS",
+  "proposals": {
+   "proposals": [
+    {
+     "travelId": "2026-10-31T07:46_2503",
+     "departure": {
+      "originStationLabel": "Paris Est",
+      "timeLabel": "07:46",
+      "dateLabel": "Aller : Sam. 31 oct.",
+      "displayDisabilityAssistance": false
+     },
+     "arrival": {
+      "destinationStationLabel": "Lorraine TGV",
+      "timeLabel": "09:18",
+      "dateLabel": "Sam. 31 oct.",
+      "displayDisabilityAssistance": false
+     },
+     "durationLabel": "1h32",
+     "transporterDescription": "Direct TGV INOUI",
+     "bestPrice": {
+      "value": 35.0,
+      "currency": "EUR"
+     },
+     "status": {
+      "isBookable": true
+     },
+     "secondComfortClassOffers": {
+      "offers": [
+       {
+        "type": "NORMAL",
+        "priceLabel": "35 €",
+        "title": "Modifiable sous conditions",
+        "comfortClass": {
+         "code": "SECOND",
+         "label": "2de classe",
+         "accessibilityLabel": "Seconde classe"
+        },
+        "messages": [
+         {
+          "iconId": {
+           "iconGroup": "InfoMessage",
+           "iconName": "positive"
+          },
+          "message": "15 € économisés grâce à votre carte de réduction"
+         }
+        ],
+        "travelersFares": [
+         {
+          "subtitles": [
+           "Tarif AVANTAGE JEUNE"
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     "firstComfortClassOffers": {
+      "offers": [
+       {
+        "type": "NORMAL",
+        "priceLabel": "37 €",
+        "title": "Modifiable sous conditions",
+        "comfortClass": {
+         "code": "FIRST",
+         "label": "1re classe",
+         "accessibilityLabel": "1re classe"
+        },
+        "messages": [
+         {
+          "iconId": {
+           "iconGroup": "InfoMessage",
+           "iconName": "positive"
+          },
+          "message": "17 € économisés grâce à votre carte de réduction"
+         }
+        ],
+        "travelersFares": [
+         {
+          "subtitles": [
+           "Tarif AVANTAGE JEUNE"
+          ]
+         }
+        ]
+       },
+       {
+        "type": "NORMAL",
+        "priceLabel": "130 €",
+        "title": "Modifiable sans frais",
+        "comfortClass": {
+         "code": "FIRST",
+         "label": "Tarif Flex Première",
+         "accessibilityLabel": "Tarif Flex Première"
+        },
+        "messages": [],
+        "travelersFares": [
+         {
+          "subtitles": [
+           "Tarif FLEX PREMIÈRE"
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     "globalTimeline": {
+      "steps": [
+       {
+        "other": true
+       },
+       {
+        "train": {
+         "departure": {
+          "stationCode": "",
+          "stationLabel": "Paris Est",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "07:46"
+         },
+         "arrival": {
+          "stationCode": "",
+          "stationLabel": "Lorraine TGV",
+          "isStationLinkDisplayed": false,
+          "timeLabel": "09:18"
+         },
+         "transporter": {
+          "modeIcon": {
+           "iconGroup": "Transports",
+           "iconName": "train"
+          },
+          "logo": "tgv_inoui",
+          "number": "n° 2503",
+          "referenceLabel": "n° 2503",
+          "description": "TGV INOUI",
+          "semanticDescription": "TGV INOUI"
+         }
+        }
+       }
+      ]
+     }
+    }
+   ],
+   "pagination": {
+    "previous": {
+     "label": "Afficher le jour précédent",
+     "changeDay": true
+    },
+    "next": {
+     "label": "Afficher les trajets suivants",
+     "changeDay": false
+    }
+   }
+  }
+ }
+}

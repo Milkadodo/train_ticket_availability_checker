@@ -1,0 +1,40 @@
+{
+  "_lisez_moi": "Calendrier des ouvertures de ventes connues. Ajoute ici les prochaines annonces SNCF (https://www.sncf-connect.com/aide/l-ouverture-des-ventes). Pour une période non listée, l'outil estime la date à partir du rythme habituel. L'heure exacte n'est pas publiée : les ventes ouvrent en général un peu avant 6h.",
+  "ouvertures": [
+    {
+      "transporteur": "TGV INOUI",
+      "voyages_du": "2026-07-04",
+      "voyages_au": "2026-12-12",
+      "ouverture": "2026-03-11T06:00",
+      "source": "https://www.voyagerentrain.fr/ouverture-billets-automne-2026/"
+    },
+    {
+      "transporteur": "TGV INOUI",
+      "voyages_du": "2026-12-13",
+      "voyages_au": "2027-01-06",
+      "ouverture": "2026-09-30T06:00",
+      "source": "https://www.sncf-connect.com/bons-plans/ouverture-ventes-noel"
+    },
+    {
+      "transporteur": "TGV INOUI",
+      "voyages_du": "2027-01-07",
+      "voyages_au": "2027-07-02",
+      "ouverture": "2026-11-12T06:00",
+      "source": "https://www.sncf-connect.com/aide/l-ouverture-des-ventes"
+    },
+    {
+      "transporteur": "OUIGO",
+      "voyages_du": "2026-07-04",
+      "voyages_au": "2026-12-12",
+      "ouverture": "2026-03-11T06:00",
+      "source": "https://www.voyagerentrain.fr/ouverture-billets-automne-2026/"
+    },
+    {
+      "transporteur": "OUIGO",
+      "voyages_du": "2026-12-13",
+      "voyages_au": "2027-07-02",
+      "ouverture": "2026-09-30T06:00",
+      "source": "https://www.sncf-connect.com/aide/l-ouverture-des-ventes"
+    }
+  ]
+}

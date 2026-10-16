@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trajets-alternance"
+version = "0.1.0"
+description = "Application en ligne de commande : billets TGV INOUI / OUIGO au meilleur prix (mode alternance Paris ⇄ Nancy et trajet libre)."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "playwright>=1.45",
+    "questionary>=2",
+    "rich>=13",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+trajets = "trajets.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["trajets*"]
+
+[tool.setuptools.package-data]
+trajets = ["data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
