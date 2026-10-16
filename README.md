@@ -5,8 +5,8 @@ choisis dans des menus.
 
 ```
 ╭─────────────────────────────────────────────────────────────────────────╮
-│ 🚄 Trajets — billets TGV INOUI et OUIGO au meilleur prix                 │
-│ ↑↓ pour choisir · Entrée pour valider · Ctrl+C pour revenir en arrière  │
+│ 🚄 Trajets — billets TGV INOUI et OUIGO au meilleur prix                          │
+│ ↑↓ choisir · Entrée valider · Échap étape précédente · Ctrl+C menu principal     │
 ╰─────────────────────────────────────────────────────────────────────────╯
 ? Que veux-tu faire ? (↑↓ puis Entrée)
  » 🎓  Mode alternance — Paris ⇄ Nancy, autour de tes fins de période
@@ -96,7 +96,17 @@ et demande confirmation : beaucoup de recherches d'affilée peuvent déclencher 
 | Dossier des rappels | où enregistrer les .ics (par défaut `~/Documents/Rappels trains`) |
 | Vider le cache | oublie les résultats gardés 20 minutes |
 
-Ctrl+C à n'importe quelle question te ramène au menu ; dans le menu principal, il quitte.
+### Se déplacer
+
+| Touche | Effet |
+| --- | --- |
+| ↑ ↓ puis Entrée | choisir dans un menu |
+| **Échap** (ou le choix **↩ Retour** en bas de chaque menu) | revenir à la question précédente, réponses déjà saisies conservées |
+| Ctrl+C | abandonner et revenir au menu principal (dans le menu principal : quitter) |
+
+Les questions sans objet sont sautées dans les deux sens (ex. la date de retour d'un aller simple, ou les jours
+avant/après quand Flex n'est pas choisi). Avant une longue recherche, « ↩ Retour » permet de modifier les choix au
+lieu de lancer.
 
 ## Lire les résultats
 
@@ -219,6 +229,7 @@ bloquer le profil : au lancement suivant, l'outil le détecte et propose de le f
 ```
 trajets/
   cli.py              application interactive : menus, saisies, réglages, rappels
+  assistant.py        enchaînement des questions avec retour à l'étape précédente
   modes.py            mode alternance (week-end / flex), trajet libre (A/R multiples, flex)
   recherche.py        moteur : une journée = SNCF Connect + OUIGO, fusion, rames jumelées, trains complets
   horaires.py         horaires officiels SNCF (GTFS) : téléchargement, index, trains prévus

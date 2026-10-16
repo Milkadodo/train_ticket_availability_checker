@@ -9,6 +9,7 @@ from datetime import date, datetime
 from pathlib import Path
 
 import questionary
+from prompt_toolkit.key_binding import KeyBindings, merge_key_bindings
 from questionary import Choice
 from rich.console import Console
 from rich.panel import Panel
@@ -21,6 +22,7 @@ from trajets.affichage import (
     afficher_recherche,
     regrouper_fermes,
 )
+from trajets.assistant import RETOUR, SAUTER, derouler, reponse_valide
 from trajets.cache import Cache
 from trajets.dates import DateInvalide, est_vendredi, format_courte, format_jour, parse_date, parse_liste_dates
 from trajets.modes import recherches_allers_retours, recherches_alternance
@@ -43,7 +45,8 @@ STYLE = questionary.Style(
         ("instruction", "fg:#8a8a8a italic"),
     ]
 )
-ANNULE = "↩ Annulé"
+ANNULE = "↩ Annulé, retour au menu"
+CHOIX_RETOUR = "↩ Retour"
 SEUIL_JOURNEES = 8  # au-delà, on demande confirmation avant de lancer la recherche
 SECONDES_PAR_JOURNEE = 10
 
@@ -82,7 +85,7 @@ class Application:
                 Text.assemble(
                     ("🚄 Trajets", "bold magenta"),
                     " — billets TGV INOUI et OUIGO au meilleur prix\n",
-                    ("↑↓ pour choisir · Entrée pour valider · Ctrl+C pour revenir en arrière", "dim"),
+                    ("↑↓ choisir · Entrée valider · Échap étape précédente · Ctrl+C menu principal", "dim"),
                 ),
                 expand=False,
             )
@@ -97,6 +100,7 @@ class Application:
                         Choice("⚙️   Réglages", "reglages"),
                         Choice("🚪  Quitter", "quitter"),
                     ],
+                    retour=False,
                 )
                 if choix in (None, "quitter"):
                     break
@@ -111,199 +115,180 @@ class Application:
 
     async def mode_alternance(self) -> None:
         r, auj = self.reglages, aujourd_hui()
-        ecole = await self._saisir_dates(
-            "Vendredis de fin d'école (→ trajet Nancy → Paris)", r.fins_a_venir(r.fins_ecole, auj)
-        )
-        if ecole is None:
+        etat = {
+            "ecole": r.fins_a_venir(r.fins_ecole, auj),
+            "entreprise": r.fins_a_venir(r.fins_entreprise, auj),
+            "jours": "flex" if r.flex else tuple(r.jours_weekend),
+            "avant": r.flex_avant,
+            "apres": r.flex_apres,
+        }
+
+        async def ecole():
+            return _ranger(etat, "ecole", await self._saisir_dates(
+                "Vendredis de fin d'école (→ trajet Nancy → Paris)", etat["ecole"]
+            ))
+
+        async def entreprise():
+            return _ranger(etat, "entreprise", await self._saisir_dates(
+                "Vendredis de fin d'entreprise (→ trajet Paris → Nancy)", etat["entreprise"],
+                obligatoire=not etat["ecole"], message_obligatoire="Indique au moins une date (ici ou à l'étape précédente)",
+            ))
+
+        async def jours():
+            return _ranger(etat, "jours", await self._choisir(
+                "Jours à chercher",
+                [
+                    Choice("Samedi et dimanche", (5, 6)),
+                    Choice("Samedi seulement", (5,)),
+                    Choice("Dimanche seulement", (6,)),
+                    Choice(f"Flex : X jours avant et Y jours après la date (dernier choix : −{etat['avant']} / +{etat['apres']})", "flex"),
+                ],
+                defaut=etat["jours"],
+            ))
+
+        async def avant():
+            if etat["jours"] != "flex":
+                return SAUTER
+            return _ranger(etat, "avant", await self._saisir_nombre(
+                "Combien de jours AVANT la date ?", etat["avant"], "(0 = à partir de la date de fin, 1 = dès la veille…)"
+            ))
+
+        async def apres():
+            if etat["jours"] != "flex":
+                return SAUTER
+            return _ranger(etat, "apres", await self._saisir_nombre(
+                "Combien de jours APRÈS la date ?", etat["apres"], "(2 = jusqu'au dimanche pour un vendredi)"
+            ))
+
+        async def confirmation():
+            r.flex = etat["jours"] == "flex"
+            if r.flex:
+                r.flex_avant, r.flex_apres = etat["avant"], etat["apres"]
+            else:
+                r.jours_weekend = sorted(etat["jours"])
+            etat["recherches"], etat["passees"] = recherches_alternance(etat["ecole"], etat["entreprise"], r.choix_jours(), auj)
+            return await self._confirmer_volume(etat["recherches"])
+
+        if not await derouler([ecole, entreprise, jours, avant, apres, confirmation]):
             return
-        entreprise = await self._saisir_dates(
-            "Vendredis de fin d'entreprise (→ trajet Paris → Nancy)", r.fins_a_venir(r.fins_entreprise, auj)
-        )
-        if entreprise is None:
-            return
-        if not ecole and not entreprise:
-            self.console.print("[yellow]Aucune date saisie.[/]")
-            return
-        jours = await self._choisir(
-            "Jours à chercher",
-            [
-                Choice("Samedi et dimanche", (5, 6)),
-                Choice("Samedi seulement", (5,)),
-                Choice("Dimanche seulement", (6,)),
-                Choice(f"Flex : X jours avant et Y jours après la date (dernier choix : −{r.flex_avant} / +{r.flex_apres})", "flex"),
-            ],
-            defaut="flex" if r.flex else tuple(r.jours_weekend),
-        )
-        if jours is None:
-            return
-        if jours == "flex":
-            plage = await self._saisir_plage(
-                r.flex_avant, r.flex_apres,
-                aide_avant="(0 = à partir de la date de fin, 1 = dès la veille…)",
-                aide_apres="(2 = jusqu'au dimanche pour un vendredi)",
-            )
-            if plage is None:
-                return
-            r.flex, (r.flex_avant, r.flex_apres) = True, plage
-        else:
-            r.flex, r.jours_weekend = False, sorted(jours)
-        r.fins_ecole = [d.isoformat() for d in ecole]
-        r.fins_entreprise = [d.isoformat() for d in entreprise]
+        r.fins_ecole = [d.isoformat() for d in etat["ecole"]]
+        r.fins_entreprise = [d.isoformat() for d in etat["entreprise"]]
         r.enregistrer()
 
         if not r.flex:
-            for d in ecole + entreprise:
+            for d in etat["ecole"] + etat["entreprise"]:
                 if not est_vendredi(d):
                     self.console.print(f"[yellow]⚠ Le {format_jour(d)} n'est pas un vendredi : je cherche le week-end qui suit.[/]")
-        recherches, passees = recherches_alternance(ecole, entreprise, r.choix_jours(), auj)
-        for d in passees:
+        for d in etat["passees"]:
             self.console.print(f"[dim]Les jours à chercher autour du {format_jour(d)} sont déjà passés : ignoré.[/]")
-        if recherches and await self._volume_acceptable(recherches):
+        if etat["recherches"]:
             titre = "Récapitulatif — meilleur prix par période" if r.flex else "Récapitulatif — meilleur prix par week-end"
-            await self._executer(recherches, r.options(direct_seulement=True), titre)
-
-    async def _saisir_plage(self, avant: int, apres: int, aide_avant: str, aide_apres: str) -> tuple[int, int] | None:
-        """Mode flex : combien de jours avant et après la date (la date elle-même est toujours cherchée)."""
-        avant = await self._saisir_nombre("Combien de jours AVANT la date ?", avant, aide_avant)
-        if avant is None:
-            return None
-        apres = await self._saisir_nombre("Combien de jours APRÈS la date ?", apres, aide_apres)
-        return None if apres is None else (avant, apres)
-
-    async def _saisir_nombre(self, message: str, defaut: int, aide: str, maximum: int = 7) -> int | None:
-        texte = await self._poser(
-            questionary.text(
-                message,
-                default=str(defaut),
-                instruction=aide,
-                validate=lambda t: (t.strip().isdigit() and int(t) <= maximum) or f"Un nombre entre 0 et {maximum}",
-                style=STYLE,
-            )
-        )
-        return None if texte is None else int(texte)
-
-    async def _volume_acceptable(self, recherches: list[Recherche]) -> bool:
-        """Beaucoup de jours = longue recherche et risque de blocage anti-robot : on demande confirmation."""
-        nb_jours = len({(r.itineraire.label, j) for r in recherches for j in r.jours})
-        if nb_jours <= SEUIL_JOURNEES:
-            return True
-        minutes = max(1, round(nb_jours * SECONDES_PAR_JOURNEE / 60))
-        self.console.print(
-            f"[yellow]{nb_jours} journées à chercher : compte environ {minutes} min. Beaucoup de recherches d'affilée "
-            "peuvent déclencher la vérification anti-robot de SNCF Connect.[/]"
-        )
-        return await self._oui_non("Continuer ?")
-
-    async def _saisir_dates(
-        self,
-        message: str,
-        deja: list[date],
-        obligatoire: bool = False,
-        minimum: date | None = None,
-        aide: str = "(séparés par des espaces, ex. 18/12/2026 22/01 — vide si aucun)",
-    ) -> list[date] | None:
-        def valider(texte: str):
-            try:
-                dates = parse_liste_dates(texte, aujourd_hui())
-            except DateInvalide as exc:
-                return str(exc)
-            if obligatoire and not dates:
-                return "Indique au moins une date"
-            if minimum and any(d < minimum for d in dates):
-                return f"Les dates doivent être à partir du {format_jour(minimum)}"
-            return True
-
-        texte = await self._poser(
-            questionary.text(
-                message,
-                default=" ".join(format_courte(d) for d in deja),
-                instruction=aide,
-                validate=valider,
-                style=STYLE,
-            )
-        )
-        return None if texte is None else parse_liste_dates(texte, aujourd_hui())
+            await self._executer(etat["recherches"], r.options(direct_seulement=True), titre)
 
     # --- Trajet libre ---------------------------------------------------------------------------
 
     async def mode_libre(self) -> None:
         r, auj = self.reglages, aujourd_hui()
-        type_trajet = await self._choisir(
-            "Type de trajet",
-            [
-                Choice("Aller simple", "simple"),
-                Choice("Aller-retour", "ar"),
-                Choice("Plusieurs allers-retours (plusieurs dates d'aller et de retour)", "plusieurs"),
-            ],
-        )
-        if type_trajet is None:
-            return
-        origine = await self._choisir_lieu("Ville ou gare de départ", r.lieu("derniere_origine"))
-        if origine is None:
-            return
-        destination = await self._choisir_lieu("Ville ou gare d'arrivée", r.lieu("derniere_destination"), exclure=origine)
-        if destination is None:
-            return
+        etat = {
+            "type": "simple",
+            "origine": r.lieu("derniere_origine"),
+            "destination": r.lieu("derniere_destination"),
+            "allers": [],
+            "retours": [],
+            "flex": r.libre_flex,
+            "avant": r.libre_flex_avant,
+            "apres": r.libre_flex_apres,
+            "direct": r.direct_seulement,
+        }
 
-        if type_trajet == "plusieurs":
-            allers = await self._saisir_dates(
-                "Dates d'aller", [], obligatoire=True, minimum=auj, aide="(séparées par des espaces, ex. 07/11 13/11 20/11)"
-            )
-            if allers is None:
-                return
-            retours = await self._saisir_dates(
-                "Dates de retour", [], minimum=auj,
-                aide="(séparées par des espaces — chaque aller est associé au premier retour qui suit)",
-            )
-            if retours is None:
-                return
-        else:
-            aller = await self._saisir_date("Date de l'aller")
-            if aller is None:
-                return
-            allers, retours = [aller], []
-            if type_trajet == "ar":
-                retour = await self._saisir_date("Date du retour", minimum=aller)
-                if retour is None:
-                    return
-                retours = [retour]
+        async def type_trajet():
+            return _ranger(etat, "type", await self._choisir(
+                "Type de trajet",
+                [
+                    Choice("Aller simple", "simple"),
+                    Choice("Aller-retour", "ar"),
+                    Choice("Plusieurs allers-retours (plusieurs dates d'aller et de retour)", "plusieurs"),
+                ],
+                defaut=etat["type"],
+            ))
 
-        flex = await self._choisir(
-            "Dates",
-            [
-                Choice("Dates exactes", False),
-                Choice(
-                    f"Flex : X jours avant et Y jours après chaque date (dernier choix : −{r.libre_flex_avant} / +{r.libre_flex_apres})",
-                    True,
-                ),
-            ],
-            defaut=r.libre_flex,
-        )
-        if flex is None:
+        async def origine():
+            return _ranger(etat, "origine", await self._choisir_lieu("Ville ou gare de départ", etat["origine"]))
+
+        async def destination():
+            return _ranger(etat, "destination", await self._choisir_lieu(
+                "Ville ou gare d'arrivée", etat["destination"], exclure=etat["origine"]
+            ))
+
+        async def allers():
+            if etat["type"] == "plusieurs":
+                return _ranger(etat, "allers", await self._saisir_dates(
+                    "Dates d'aller", etat["allers"], obligatoire=True, minimum=auj,
+                    aide="(séparées par des espaces, ex. 07/11 13/11 20/11)",
+                ))
+            aller = await self._saisir_date("Date de l'aller", defaut=etat["allers"][0] if etat["allers"] else None)
+            return _ranger(etat, "allers", [aller] if reponse_valide(aller) else aller)
+
+        async def retours():
+            if etat["type"] == "simple":
+                etat["retours"] = []
+                return SAUTER
+            if etat["type"] == "plusieurs":
+                return _ranger(etat, "retours", await self._saisir_dates(
+                    "Dates de retour", etat["retours"], minimum=auj,
+                    aide="(séparées par des espaces — chaque aller est associé au premier retour qui suit)",
+                ))
+            precedent = etat["retours"][0] if etat["retours"] and etat["retours"][0] >= etat["allers"][0] else None
+            retour = await self._saisir_date("Date du retour", minimum=etat["allers"][0], defaut=precedent)
+            return _ranger(etat, "retours", [retour] if reponse_valide(retour) else retour)
+
+        async def flex():
+            return _ranger(etat, "flex", await self._choisir(
+                "Dates",
+                [
+                    Choice("Dates exactes", False),
+                    Choice(f"Flex : X jours avant et Y jours après chaque date (dernier choix : −{etat['avant']} / +{etat['apres']})", True),
+                ],
+                defaut=etat["flex"],
+            ))
+
+        async def avant():
+            if not etat["flex"]:
+                return SAUTER
+            return _ranger(etat, "avant", await self._saisir_nombre("Combien de jours AVANT chaque date ?", etat["avant"], "(0 = pas de jour avant)"))
+
+        async def apres():
+            if not etat["flex"]:
+                return SAUTER
+            return _ranger(etat, "apres", await self._saisir_nombre("Combien de jours APRÈS chaque date ?", etat["apres"], "(0 = pas de jour après)"))
+
+        async def direct():
+            return _ranger(etat, "direct", await self._choisir(
+                "Quels trajets ?",
+                [Choice("Directs uniquement", True), Choice("Avec correspondances aussi", False)],
+                defaut=etat["direct"],
+            ))
+
+        async def confirmation():
+            plage = (etat["avant"], etat["apres"]) if etat["flex"] else None
+            itineraire = Itineraire(etat["origine"], etat["destination"])
+            etat["recherches"] = recherches_allers_retours(itineraire, etat["allers"], etat["retours"], plage, auj)
+            if etat["type"] == "plusieurs":
+                self._annoncer_allers_retours(etat["recherches"])
+            return await self._confirmer_volume(etat["recherches"])
+
+        etapes = [type_trajet, origine, destination, allers, retours, flex, avant, apres, direct, confirmation]
+        if not await derouler(etapes):
             return
-        plage = None
-        if flex:
-            plage = await self._saisir_plage(
-                r.libre_flex_avant, r.libre_flex_apres, aide_avant="(0 = pas de jour avant)", aide_apres="(0 = pas de jour après)"
-            )
-            if plage is None:
-                return
-            r.libre_flex_avant, r.libre_flex_apres = plage
-        direct = await self._choisir(
-            "Quels trajets ?",
-            [Choice("Directs uniquement", True), Choice("Avec correspondances aussi", False)],
-            defaut=r.direct_seulement,
-        )
-        if direct is None:
-            return
-        r.derniere_origine, r.derniere_destination = origine.vers_dict(), destination.vers_dict()
-        r.direct_seulement, r.libre_flex = direct, flex
+        r.derniere_origine, r.derniere_destination = etat["origine"].vers_dict(), etat["destination"].vers_dict()
+        r.direct_seulement, r.libre_flex = etat["direct"], etat["flex"]
+        if etat["flex"]:
+            r.libre_flex_avant, r.libre_flex_apres = etat["avant"], etat["apres"]
         r.enregistrer()
 
-        recherches = recherches_allers_retours(Itineraire(origine, destination), allers, retours, plage, auj)
-        if type_trajet == "plusieurs":
-            self._annoncer_allers_retours(recherches)
-        if not recherches or not await self._volume_acceptable(recherches):
+        recherches = etat["recherches"]
+        if not recherches:
+            self.console.print("[yellow]Toutes les dates sont déjà passées.[/]")
             return
         comparatif = any(rech.sens == "retour" for rech in recherches) and any(rech.sens == "aller" for rech in recherches)
         await self._executer(recherches, r.options(), "Récapitulatif", comparatif=comparatif)
@@ -316,21 +301,19 @@ class Application:
         for groupe, liste in groupes.items():
             self.console.print(f"  • {groupe} : " + " → ".join(rech.etiquette for rech in liste))
 
-    async def _choisir_lieu(self, message: str, precedent: Lieu | None, exclure: Lieu | None = None) -> Lieu | None:
-        defaut = precedent.nom if precedent and (not exclure or precedent.sncf_id != exclure.sncf_id) else ""
+    # --- Saisies réutilisables ------------------------------------------------------------------
+
+    async def _choisir_lieu(self, message: str, precedent: Lieu | None, exclure: Lieu | None = None):
+        """Texte libre, puis choix dans la liste de SNCF Connect (« ↩ Retour » ramène à la saisie)."""
+        if precedent and exclure and precedent.sncf_id == exclure.sncf_id:
+            precedent = None
+        defaut = precedent.nom if precedent else ""
         while True:
-            texte = await self._poser(
-                questionary.text(
-                    message,
-                    default=defaut,
-                    validate=lambda t: len(t.strip()) >= 2 or "Tape au moins 2 lettres",
-                    style=STYLE,
-                )
-            )
-            if texte is None:
-                return None
+            texte = await self._texte(message, defaut, None, lambda t: len(t.strip()) >= 2 or "Tape au moins 2 lettres")
+            if not reponse_valide(texte):
+                return texte
             texte = texte.strip()
-            if precedent and texte == precedent.nom and texte == defaut:
+            if precedent and texte == precedent.nom:
                 return precedent
             try:
                 moteur = await self._moteur_pret()
@@ -345,19 +328,39 @@ class Application:
             lieux = [l for l in lieux if not exclure or l.sncf_id != exclure.sncf_id]
             if not lieux:
                 self.console.print(f"[yellow]Aucune ville ni gare trouvée pour « {texte} ».[/]")
-                defaut = ""
+                defaut = texte
                 continue
-            choix = await self._choisir(
-                "Laquelle ?",
-                [Choice(_libelle_lieu(l), l) for l in lieux[:10]] + [Choice("↩ Chercher autre chose", "autre")],
-            )
+            choix = await self._choisir("Laquelle ?", [Choice(_libelle_lieu(l), l) for l in lieux[:10]])
             if choix is None:
                 return None
-            if choix != "autre":
+            if choix is not RETOUR:
                 return choix
-            defaut = ""
+            defaut = texte  # retour à la saisie, texte conservé
 
-    async def _saisir_date(self, message: str, minimum: date | None = None) -> date | None:
+    async def _saisir_dates(
+        self,
+        message: str,
+        deja: list[date],
+        obligatoire: bool = False,
+        minimum: date | None = None,
+        aide: str = "(séparés par des espaces, ex. 18/12/2026 22/01 — vide si aucun)",
+        message_obligatoire: str = "Indique au moins une date",
+    ):
+        def valider(texte: str):
+            try:
+                dates = parse_liste_dates(texte, aujourd_hui())
+            except DateInvalide as exc:
+                return str(exc)
+            if obligatoire and not dates:
+                return message_obligatoire
+            if minimum and any(d < minimum for d in dates):
+                return f"Les dates doivent être à partir du {format_jour(minimum)}"
+            return True
+
+        texte = await self._texte(message, " ".join(format_courte(d) for d in deja), aide, valider)
+        return parse_liste_dates(texte, aujourd_hui()) if reponse_valide(texte) else texte
+
+    async def _saisir_date(self, message: str, minimum: date | None = None, defaut: date | None = None):
         minimum = minimum or aujourd_hui()
 
         def valider(texte: str):
@@ -367,10 +370,26 @@ class Application:
                 return str(exc)
             return True if d >= minimum else f"Choisis une date à partir du {format_jour(minimum)}"
 
-        texte = await self._poser(
-            questionary.text(message, instruction="(JJ/MM/AAAA, JJ/MM, demain…)", validate=valider, style=STYLE)
+        texte = await self._texte(message, format_courte(defaut) if defaut else "", "(JJ/MM/AAAA, JJ/MM, demain…)", valider)
+        return parse_date(texte, aujourd_hui()) if reponse_valide(texte) else texte
+
+    async def _saisir_nombre(self, message: str, defaut: int, aide: str, maximum: int = 7):
+        texte = await self._texte(
+            message, str(defaut), aide, lambda t: (t.strip().isdigit() and int(t) <= maximum) or f"Un nombre entre 0 et {maximum}"
         )
-        return None if texte is None else parse_date(texte, aujourd_hui())
+        return int(texte) if reponse_valide(texte) else texte
+
+    async def _confirmer_volume(self, recherches: list[Recherche]):
+        """Beaucoup de jours = longue recherche et risque de blocage anti-robot : on demande confirmation."""
+        nb_jours = len({(r.itineraire.label, j) for r in recherches for j in r.jours})
+        if nb_jours <= SEUIL_JOURNEES:
+            return True
+        minutes = max(1, round(nb_jours * SECONDES_PAR_JOURNEE / 60))
+        self.console.print(
+            f"[yellow]{nb_jours} journées à chercher : compte environ {minutes} min. Beaucoup de recherches d'affilée "
+            "peuvent déclencher la vérification anti-robot de SNCF Connect.[/]"
+        )
+        return await self._choisir("Lancer la recherche ?", [Choice("Oui, lancer", True)])
 
     # --- Réglages -------------------------------------------------------------------------------
 
@@ -389,10 +408,9 @@ class Application:
                     Choice(f"Fenêtre du navigateur : {'visible' if r.fenetre_visible else 'cachée'}", "fenetre"),
                     Choice(f"Dossier des rappels : {r.dossier_rappels}", "dossier"),
                     Choice("Vider le cache des recherches", "cache"),
-                    Choice("↩ Retour", "retour"),
                 ],
             )
-            if choix in (None, "retour"):
+            if not reponse_valide(choix):
                 return
             await self._modifier_reglage(choix)
             r.enregistrer()
@@ -400,15 +418,10 @@ class Application:
     async def _modifier_reglage(self, cle: str) -> None:
         r = self.reglages
         if cle == "age":
-            age = await self._poser(
-                questionary.text(
-                    "Ton âge",
-                    default=str(r.age),
-                    validate=lambda t: (t.isdigit() and 4 <= int(t) <= 99) or "Un nombre entre 4 et 99",
-                    style=STYLE,
-                )
+            age = await self._texte(
+                "Ton âge", str(r.age), None, lambda t: (t.isdigit() and 4 <= int(t) <= 99) or "Un nombre entre 4 et 99"
             )
-            if age is not None:
+            if reponse_valide(age):
                 r.age = int(age)
                 if r.carte_jeune and not 12 <= r.age <= 27:
                     self.console.print("[yellow]La Carte Avantage Jeune est réservée aux 12-27 ans.[/]")
@@ -418,7 +431,7 @@ class Application:
                 [Choice("Carte Avantage Jeune (12-27 ans)", True), Choice("Aucune carte", False)],
                 defaut=r.carte_jeune,
             )
-            if carte is not None:
+            if reponse_valide(carte):
                 r.carte_jeune = carte
         elif cle == "sources":
             sources = await self._choisir(
@@ -430,7 +443,7 @@ class Application:
                 ],
                 defaut=(r.sncf, r.ouigo),
             )
-            if sources is not None:
+            if reponse_valide(sources):
                 r.sncf, r.ouigo = sources
         elif cle == "trains":
             tous = await self._choisir(
@@ -438,7 +451,7 @@ class Application:
                 [Choice("TGV INOUI et OUIGO seulement", False), Choice("Tous les trains (TER, Intercités…)", True)],
                 defaut=r.tous_trains,
             )
-            if tous is not None:
+            if reponse_valide(tous):
                 r.tous_trains = tous
         elif cle == "horaires":
             actif = await self._choisir(
@@ -449,7 +462,7 @@ class Application:
                 ],
                 defaut=r.horaires_officiels,
             )
-            if actif is not None:
+            if reponse_valide(actif):
                 r.horaires_officiels = actif
         elif cle == "fenetre":
             visible = await self._choisir(
@@ -460,20 +473,24 @@ class Application:
                 ],
                 defaut=r.fenetre_visible,
             )
-            if visible is not None and visible != r.fenetre_visible:
+            if reponse_valide(visible) and visible != r.fenetre_visible:
                 r.fenetre_visible = visible
                 await self._fermer_navigateur()  # relancé dans le bon mode à la prochaine recherche
         elif cle == "dossier":
             dossier = await self._poser(
-                questionary.path("Dossier des rappels", default=r.dossier_rappels, only_directories=True, style=STYLE)
+                questionary.path(
+                    "Dossier des rappels", default=r.dossier_rappels, only_directories=True,
+                    instruction="(Échap : retour)", style=STYLE,
+                )
             )
-            if dossier:
+            if reponse_valide(dossier) and dossier:
                 r.dossier_rappels = str(Path(dossier).expanduser())
         elif cle == "cache":
-            for fichier in (DOSSIER_APP / "cache.json", DOSSIER_APP / "ouigo_gares.json", DOSSIER_APP / "horaires" / "index.json"):
-                fichier.unlink(missing_ok=True)
-            await self._fermer_navigateur()
-            self.console.print("[green]✓ Cache vidé.[/]")
+            if await self._choisir("Vider le cache des recherches ?", [Choice("Oui, vider", True)]) is True:
+                for fichier in (DOSSIER_APP / "cache.json", DOSSIER_APP / "ouigo_gares.json", DOSSIER_APP / "horaires" / "index.json"):
+                    fichier.unlink(missing_ok=True)
+                await self._fermer_navigateur()
+                self.console.print("[green]✓ Cache vidé.[/]")
 
     # --- Recherche et résultats -----------------------------------------------------------------
 
@@ -577,18 +594,44 @@ class Application:
         finally:
             self.statut.stop()
 
-    async def _poser(self, question: questionary.Question):
-        """Pose la question ; None si l'utilisateur annule (Ctrl+C)."""
+    async def _poser(self, question: questionary.Question, retour: bool = True):
+        """Pose la question. Renvoie None si l'utilisateur annule (Ctrl+C), RETOUR s'il appuie sur Échap."""
+        if retour:
+            touches = KeyBindings()
+
+            @touches.add("escape", eager=True)
+            def _revenir(event):
+                event.app.exit(result=RETOUR)
+
+            application = question.application
+            application.key_bindings = merge_key_bindings([b for b in (application.key_bindings, touches) if b])
+            application.ttimeoutlen = 0.1  # Échap réagit tout de suite
         return await question.ask_async(kbi_msg=ANNULE)
 
-    async def _choisir(self, message: str, choix: list[Choice], defaut=None):
+    async def _texte(self, message: str, defaut: str, aide: str | None, valider):
+        aide = f"{aide[:-1]} · Échap : retour)" if aide else "(Échap : retour)"
+        return await self._poser(questionary.text(message, default=defaut, instruction=aide, validate=valider, style=STYLE))
+
+    async def _choisir(self, message: str, choix: list[Choice], defaut=None, retour: bool = True):
+        """Menu au clavier ; avec `retour`, un choix « ↩ Retour » (ou Échap) renvoie RETOUR."""
+        if retour:
+            choix = [*choix, Choice(CHOIX_RETOUR, RETOUR)]
         initial = next((c for c in choix if defaut is not None and c.value == defaut), None)
         return await self._poser(
-            questionary.select(message, choices=choix, default=initial, instruction="(↑↓ puis Entrée)", style=STYLE)
+            questionary.select(message, choices=choix, default=initial, instruction="(↑↓ puis Entrée)", style=STYLE),
+            retour=retour,
         )
 
     async def _oui_non(self, message: str, defaut: bool = True) -> bool:
-        return bool(await self._choisir(message, [Choice("Oui", True), Choice("Non", False)], defaut=defaut))
+        reponse = await self._choisir(message, [Choice("Oui", True), Choice("Non", False)], defaut=defaut, retour=False)
+        return reponse is True
+
+
+def _ranger(etat: dict, cle: str, valeur):
+    """Mémorise une réponse valide dans l'état de l'assistant et la renvoie telle quelle."""
+    if reponse_valide(valeur):
+        etat[cle] = valeur
+    return valeur
 
 
 def _libelle_lieu(lieu: Lieu) -> str:
